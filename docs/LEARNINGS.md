@@ -495,4 +495,31 @@
 - **Dónde aplica:** build_app.py (`VIEWS.equipos` COLS, `VIEWS.registroMP` `cols()`);
   CHANGELOG v0.39; app.html regenerado.
 
+## [2026-05-29] El PATRÓN común de los bugs y el mecanismo que lo frena (prueba de humo)
+
+- **Disparador:** tras el bug v0.39, el usuario pidió no quedarse en el caso suelto sino
+  entender el TIPO de error que se repite y dejar un mecanismo permanente que lo impida.
+- **Patrón confirmado (mirando v0.24 fechas, v0.33 MP, v0.34 estado y v0.39 planillas):**
+  todos nacen del MISMO molde — se modifica una función grande y compartida (una vista o un
+  cálculo central) asumiendo que el dato siempre tiene UNA sola forma, y NO se vuelve a
+  probar el camino básico con los DATOS REALES del usuario:
+  · v0.24: se asumió que toda fecha se parsea bien con `new Date` (los `YYYY-MM-DD` se corren).
+  · v0.33/v0.34: se asumió que la realización/estado vive en eventos (vive en la matriz gantt).
+  · v0.39: se asumió que toda columna de texto devuelve texto (modelo/ubicación vienen número).
+  La causa raíz NO es el detalle (la fecha, la matriz, el número): es el PROCESO — validar con
+  supuestos o con el seed, no con el backup real, y no re-correr el camino básico tras tocar
+  algo grande.
+- **Mecanismo permanente (hecho):** `tests/smoke.js` — prueba de humo headless (jsdom) que
+  importa un respaldo real de `data/` y verifica el camino crítico: Equipos se ve completa →
+  abrir ficha → filtros + filtro por valor numérico → Ctrl+K → folio heredado del ciclo
+  abierto → sin errores de JS. Probada en rojo/verde: con el app.html v0.38 falla 6/11 (y
+  nombra `a.localeCompare is not a function`); con v0.39 pasa 11/11. Se agregó `npm test` y
+  se volvió OBLIGATORIA en el paso 5 de CLAUDE.md (después de regenerar `app.html`).
+- **Heurística (regla nueva):** ningún cambio se cierra sin `node tests/smoke.js` en verde.
+  Si se agrega una vista o un cálculo central, AMPLIAR la prueba con su camino básico. La
+  prueba usa los datos reales de `data/` a propósito: ahí viven los casos borde (campos
+  numéricos, ciclos abiertos) que el seed no expone.
+- **Dónde aplica:** tests/smoke.js (nuevo), package.json (`npm test`), CLAUDE.md (paso 5),
+  docs/LEARNINGS.md.
+
 <!-- Próximas entradas debajo de esta línea -->

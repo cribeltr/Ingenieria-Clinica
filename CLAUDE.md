@@ -103,6 +103,12 @@ Antes de cerrar:
 - Subir la versión y anotar el cambio en el CHANGELOG dentro de `build_app.py`.
 - Añadir una entrada a `docs/LEARNINGS.md` con su formato.
 - Regenerar `app.html` y confirmar que no da error.
+- **Correr la prueba de humo: `node tests/smoke.js` (o `npm test`).** Es OBLIGATORIO y
+  va DESPUÉS de regenerar `app.html`. Verifica sola el camino crítico (importar un
+  respaldo real de `data/` → Equipos se ve completa → abrir ficha → filtros y Ctrl+K →
+  folio heredado del ciclo abierto). NINGÚN cambio se da por terminado si la prueba no
+  pasa en verde. Nació del bug v0.39 ("los datos no se ven"): se tocó una función grande
+  y compartida sin volver a probar el camino básico con los datos reales.
 
 ## Invariantes (romper esto = bug)
 
