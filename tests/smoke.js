@@ -73,30 +73,35 @@ function check(name, ok, detail){ results.push({ name, ok: !!ok, detail: detail 
   await sleep(300);
   const tbody = w.document.querySelector('table.eq-grid tbody');
   const filas = tbody ? tbody.querySelectorAll('tr').length : 0;
-  const filtros = w.document.querySelectorAll('table.eq-grid thead select').length;
+  const filtros = w.document.querySelectorAll('table.eq-grid thead .colf-btn').length;
   const counter = w.document.querySelector('.view .muted');
   const esperadas = Math.min(totalEquipos, 500);
   check('Equipos: la tabla se ve (no en blanco)', filas >= 100, `${filas} filas renderizadas`);
   check('Equipos: filas = mín(total,500)', filas === esperadas, `esperadas ${esperadas}, vistas ${filas}`);
-  check('Equipos: filtros de columna construidos', filtros >= 5, `${filtros} selects de filtro`);
+  check('Equipos: filtros de columna construidos', filtros >= 5, `${filtros} filtros de columna`);
   check('Equipos: contador presente', !!(counter && /\d+\s+equipos/.test(counter.textContent)), counter ? counter.textContent.trim() : 'sin contador');
 
-  // --- 3a) Filtro por un valor NUMÉRICO de columna (lo que rompía la tabla) ---
-  const selects = [...w.document.querySelectorAll('table.eq-grid thead select')];
-  let selNum = null, valNum = null;
-  for(const s of selects){
-    const op = [...s.options].find(o => /^\d+$/.test(o.value));
-    if(op){ selNum = s; valNum = op.value; break; }
+  // --- 3a) Filtro de columna multi-selección estilo Excel (uno, varios o todos) ---
+  const colBtns = [...w.document.querySelectorAll('table.eq-grid thead .colf-btn')];
+  let msOk = false, msDetalle = 'no había filtros de columna';
+  if(colBtns.length){
+    colBtns[0].dispatchEvent(new w.Event('click', { bubbles: true }));   // abre el checklist de la 1ª columna de lista
+    await sleep(60);
+    const pop = w.document.querySelector('.colf-pop');
+    if(pop){
+      const boxes = [...pop.querySelectorAll('.colf-item input[type=checkbox]')];
+      const marcar = Math.min(2, boxes.length);
+      for(let i = 0; i < marcar; i++){ boxes[i].checked = true; boxes[i].dispatchEvent(new w.Event('change', { bubbles: true })); }
+      const aplicar = pop.querySelector('button.primary');
+      aplicar.dispatchEvent(new w.Event('click', { bubbles: true }));
+      await sleep(120);
+      const fMs = w.document.querySelectorAll('table.eq-grid tbody tr').length;
+      const btnAct = w.document.querySelector('table.eq-grid thead .colf-btn.activo');
+      msOk = fMs > 0 && fMs <= 500 && !!btnAct;
+      msDetalle = `marqué ${marcar} valor(es) → ${fMs} filas (botón: ${btnAct ? btnAct.textContent : '—'})`;
+    } else { msDetalle = 'no se abrió el popup de filtro'; }
   }
-  if(selNum){
-    selNum.value = valNum;
-    selNum.dispatchEvent(new w.Event('change', { bubbles: true }));
-    await sleep(120);
-    const fFiltradas = w.document.querySelectorAll('table.eq-grid tbody tr').length;
-    check('Equipos: filtrar por valor numérico devuelve filas', fFiltradas > 0, `valor "${valNum}" → ${fFiltradas} filas`);
-  } else {
-    check('Equipos: filtrar por valor numérico devuelve filas', true, 'omitido (no había columna con valores numéricos)');
-  }
+  check('Equipos: filtro multi-selección (uno/varios)', msOk, msDetalle);
 
   // --- 3b) Búsqueda global filtra ---
   try { w.navigate('equipos'); } catch(e){}
@@ -149,6 +154,27 @@ function check(name, ok, detail){ results.push({ name, ok: !!ok, detail: detail 
   } else {
     check('Folio: se hereda del ciclo abierto (preseleccionado)', true, 'omitido (sin ciclos abiertos en el backup)');
   }
+
+  // --- B) Recepción hereda el N° de envío (preseleccionado, no a mano) ---
+  let invEnvio = null;
+  for(const ev of (backup.eventos || [])){ if(String(ev.tipo||'').includes('Env') && ev.nEnvio){ invEnvio = ev.inv; break; } }
+  if(invEnvio && typeof w.nEnvioRecepcionControl === 'function'){
+    const ctrl = w.nEnvioRecepcionControl(invEnvio);
+    const ok = ctrl && ctrl.tagName === 'SELECT' && !!ctrl.value;
+    check('Recepción: hereda el N° de envío del Envío previo', ok, `${invEnvio} → "${ctrl ? ctrl.value : '—'}"`);
+  } else {
+    check('Recepción: hereda el N° de envío del Envío previo', true, 'omitido (sin envíos con N° en el backup)');
+  }
+
+  // --- E) Pendientes: columnas nuevas y estados con la nomenclatura del documento ---
+  try { w.navigate('pendientes'); } catch(e){ pageErrors.push('navigate pendientes: ' + e.message); }
+  await sleep(250);
+  const headTxt = [...w.document.querySelectorAll('.view table thead th')].map(t => t.textContent).join('|');
+  const tieneCols = ['Responsable','Recordatorio','Gestión'].every(c => headTxt.includes(c));
+  check('Pendientes: columnas Responsable / Recordatorio / Gestión', tieneCols, headTxt ? headTxt.slice(0,140) : 'sin tabla');
+  const opts = [...w.document.querySelectorAll('.view select option')].map(o => o.textContent);
+  const estadosOk = ['Creado','Abierto','Cerrado'].every(s => opts.includes(s));
+  check('Pendientes: estados del documento (Creado/Abierto/Cerrado)', estadosOk, ['Creado','Abierto','Cerrado'].filter(s => opts.includes(s)).join(', ') || '—');
 
   // --- Sin errores de JavaScript en pantalla durante el recorrido ---
   check('Sin errores de JavaScript en el recorrido', pageErrors.length === 0, pageErrors[0] ? pageErrors[0].split('\n')[0] : '');

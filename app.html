@@ -19,6 +19,18 @@ break;case"<bookViews":;case"<bookViews>":;case"</bookViews>":break;case"<workbo
 <script>var LZString=function(){var r=String.fromCharCode,o="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",n="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-$",e={};function t(r,o){if(!e[r]){e[r]={};for(var n=0;n<r.length;n++)e[r][r.charAt(n)]=n}return e[r][o]}var i={compressToBase64:function(r){if(null==r)return"";var n=i._compress(r,6,function(r){return o.charAt(r)});switch(n.length%4){default:case 0:return n;case 1:return n+"===";case 2:return n+"==";case 3:return n+"="}},decompressFromBase64:function(r){return null==r?"":""==r?null:i._decompress(r.length,32,function(n){return t(o,r.charAt(n))})},compressToUTF16:function(o){return null==o?"":i._compress(o,15,function(o){return r(o+32)})+" "},decompressFromUTF16:function(r){return null==r?"":""==r?null:i._decompress(r.length,16384,function(o){return r.charCodeAt(o)-32})},compressToUint8Array:function(r){for(var o=i.compress(r),n=new Uint8Array(2*o.length),e=0,t=o.length;e<t;e++){var s=o.charCodeAt(e);n[2*e]=s>>>8,n[2*e+1]=s%256}return n},decompressFromUint8Array:function(o){if(null==o)return i.decompress(o);for(var n=new Array(o.length/2),e=0,t=n.length;e<t;e++)n[e]=256*o[2*e]+o[2*e+1];var s=[];return n.forEach(function(o){s.push(r(o))}),i.decompress(s.join(""))},compressToEncodedURIComponent:function(r){return null==r?"":i._compress(r,6,function(r){return n.charAt(r)})},decompressFromEncodedURIComponent:function(r){return null==r?"":""==r?null:(r=r.replace(/ /g,"+"),i._decompress(r.length,32,function(o){return t(n,r.charAt(o))}))},compress:function(o){return i._compress(o,16,function(o){return r(o)})},_compress:function(r,o,n){if(null==r)return"";var e,t,i,s={},u={},a="",p="",c="",l=2,f=3,h=2,d=[],m=0,v=0;for(i=0;i<r.length;i+=1)if(a=r.charAt(i),Object.prototype.hasOwnProperty.call(s,a)||(s[a]=f++,u[a]=!0),p=c+a,Object.prototype.hasOwnProperty.call(s,p))c=p;else{if(Object.prototype.hasOwnProperty.call(u,c)){if(c.charCodeAt(0)<256){for(e=0;e<h;e++)m<<=1,v==o-1?(v=0,d.push(n(m)),m=0):v++;for(t=c.charCodeAt(0),e=0;e<8;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}else{for(t=1,e=0;e<h;e++)m=m<<1|t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t=0;for(t=c.charCodeAt(0),e=0;e<16;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}0==--l&&(l=Math.pow(2,h),h++),delete u[c]}else for(t=s[c],e=0;e<h;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1;0==--l&&(l=Math.pow(2,h),h++),s[p]=f++,c=String(a)}if(""!==c){if(Object.prototype.hasOwnProperty.call(u,c)){if(c.charCodeAt(0)<256){for(e=0;e<h;e++)m<<=1,v==o-1?(v=0,d.push(n(m)),m=0):v++;for(t=c.charCodeAt(0),e=0;e<8;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}else{for(t=1,e=0;e<h;e++)m=m<<1|t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t=0;for(t=c.charCodeAt(0),e=0;e<16;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}0==--l&&(l=Math.pow(2,h),h++),delete u[c]}else for(t=s[c],e=0;e<h;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1;0==--l&&(l=Math.pow(2,h),h++)}for(t=2,e=0;e<h;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1;for(;;){if(m<<=1,v==o-1){d.push(n(m));break}v++}return d.join("")},decompress:function(r){return null==r?"":""==r?null:i._decompress(r.length,32768,function(o){return r.charCodeAt(o)})},_decompress:function(o,n,e){var t,i,s,u,a,p,c,l=[],f=4,h=4,d=3,m="",v=[],g={val:e(0),position:n,index:1};for(t=0;t<3;t+=1)l[t]=t;for(s=0,a=Math.pow(2,2),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;switch(s){case 0:for(s=0,a=Math.pow(2,8),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;c=r(s);break;case 1:for(s=0,a=Math.pow(2,16),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;c=r(s);break;case 2:return""}for(l[3]=c,i=c,v.push(c);;){if(g.index>o)return"";for(s=0,a=Math.pow(2,d),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;switch(c=s){case 0:for(s=0,a=Math.pow(2,8),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;l[h++]=r(s),c=h-1,f--;break;case 1:for(s=0,a=Math.pow(2,16),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;l[h++]=r(s),c=h-1,f--;break;case 2:return v.join("")}if(0==f&&(f=Math.pow(2,d),d++),l[c])m=l[c];else{if(c!==h)return null;m=i+i.charAt(0)}v.push(m),l[h++]=i+m.charAt(0),i=m,0==--f&&(f=Math.pow(2,d),d++)}}};return i}();"function"==typeof define&&define.amd?define(function(){return LZString}):"undefined"!=typeof module&&null!=module?module.exports=LZString:"undefined"!=typeof angular&&null!=angular&&angular.module("LZString",[]).factory("LZString",function(){return LZString});</script>
 <!--
 CHANGELOG
+v0.40 [2026-05-29] Ajustes de la especificación funcional (sin perder funcionalidad).
+  - Filtros de columna estilo Excel con selección MÚLTIPLE: en Buscar equipos y Registro MP
+    cada columna de lista abre un checklist (uno, varios o todos los valores), con buscador.
+    Helper compartido por ambas planillas (colFiltroActivo/pasaFiltroCol/celdaFiltroCol) para
+    no divergir. Los accesos rápidos y la navegación desde el Resumen siguen funcionando.
+  - Recepción: el N° de envío se HEREDA del último Envío del equipo (preseleccionado, no a
+    mano), igual que el folio. Reconoce la etiqueta histórica 'Envío a Serv. Técnico'.
+  - Buscar equipos: se agregó la columna Serie y la vista pasó a llamarse "Buscar equipos".
+  - Pendientes: la tabla suma Responsable, Recordatorio y Gestión (último seguimiento); nuevo
+    campo Responsable en crear/editar y en el Excel exportado.
+  - Estados del pendiente renombrados a la nomenclatura del documento: Creado / Abierto /
+    Cerrado (los valores internos no cambian, solo la etiqueta visible).
 v0.39 [2026-05-29] Fix: las planillas Equipos y Registro MP quedaban EN BLANCO al cargar.
   - BUG (regresión de v0.37/v0.38): algunos campos del catálogo (modelo en 18 equipos,
     ubicación en 3) vienen como NÚMERO en el origen. Los getters de columna devolvían el
@@ -132,7 +144,7 @@ v0.28 [2026-05-28] El folio del ciclo se preselecciona; aviso si no hay ciclo ab
     (antes era la misma expresión repetida 5 veces).
 v0.27 [2026-05-28] El número de versión del encabezado se sincroniza solo.
   - El encabezado mostraba "v0.23" fijo (escrito a mano), sin actualizarse al subir
-    APP_VERSION en versiones siguientes. Ahora usa el placeholder 0.39
+    APP_VERSION en versiones siguientes. Ahora usa el placeholder 0.40
     que build_app.py reemplaza con el valor real de APP_VERSION al generar: una
     sola fuente de verdad, no vuelve a quedar desfasado.
 v0.26 [2026-05-28] Cierre de ciclo por Recepción + Reparación "en servicio técnico".
@@ -549,6 +561,16 @@ textarea{min-height:64px;resize:vertical;font-family:inherit;line-height:1.5}
 .th-sort:hover{color:var(--accent)}
 tr.filtros-col th{position:static;background:var(--surface-2);padding:4px 6px}
 tr.filtros-col input,tr.filtros-col select{width:100%;font-size:11px;padding:5px 7px;border-radius:6px;font-weight:400}
+.colf-btn{width:100%;font-size:11px;padding:5px 7px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text-2);cursor:pointer;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.colf-btn:hover{border-color:var(--accent)}
+.colf-btn.activo{border-color:var(--accent);color:var(--accent);font-weight:600}
+.colf-pop{position:fixed;z-index:200;min-width:200px;max-width:300px;background:var(--surface);border:1px solid var(--border-strong);border-radius:10px;box-shadow:var(--shadow);padding:8px}
+.colf-actions{display:flex;justify-content:space-between;gap:6px;margin-bottom:6px}
+.colf-search{width:100%;font-size:12px;padding:6px 8px;border-radius:6px;border:1px solid var(--border);margin-bottom:6px}
+.colf-list{max-height:240px;overflow:auto;display:flex;flex-direction:column;gap:1px}
+.colf-item{display:flex;align-items:center;gap:8px;font-size:12px;padding:4px 5px;border-radius:5px;cursor:pointer;font-weight:400}
+.colf-item:hover{background:var(--surface-2)}
+.colf-item input{width:auto!important;margin:0;cursor:pointer}
 .mp-col{text-align:center;min-width:30px}
 td.mp-ok{color:var(--op);font-weight:700}
 td.mp-rep{color:var(--st);font-weight:600}
@@ -972,7 +994,7 @@ header.top nav .nav-more-menu button.active{background:var(--accent-soft);color:
 <body>
 <div class="app">
   <aside class="sidebar">
-    <div class="s-logo">HHHA <small>Equipos Críticos · v0.39</small></div>
+    <div class="s-logo">HHHA <small>Equipos Críticos · v0.40</small></div>
     <nav id="nav"></nav>
     <div class="s-foot"><span class="user-tag">👤 Cristian</span></div>
   </aside>
@@ -1020,7 +1042,7 @@ const SEED = {"equipos":[{"id":1,"carpeta":1,"inv":"2-115361","fam":"Incubadoras
 //==============================================================
 // CONSTANTES & CATÁLOGOS
 //==============================================================
-const APP_VERSION = '0.39';
+const APP_VERSION = '0.40';
 const STORAGE_KEY = 'hhha_v1_data';
 const MESES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 const MES_NUM = {Ene:0,Feb:1,Mar:2,Abr:3,May:4,Jun:5,Jul:6,Ago:7,Sep:8,Oct:9,Nov:10,Dic:11};
@@ -1063,9 +1085,13 @@ const DOCS_CORRECTIVO = ['Solicitud SIGEM con tarea cerrada','Cotización','Info
 const DOCS_PREVENTIVO = ['Protocolo / hoja de MP','Pauta de monitoreo diario (DEA)','Firma jefe equipo médico','Informe técnico de empresa externa'];
 
 const TIPO_PENDIENTE = {documento_faltante:'Documento faltante',reprogramacion:'Reprogramación MP',recomendacion_tecnica:'Recomendación técnica',gestion_general:'Gestión general'};
-// Estados de pendiente orientados a la acción: No iniciado -> En proceso -> Resuelto.
-// 'cerrado' se conserva como estado final (= Resuelto) para no romper los conteos existentes (!== 'cerrado').
-const ESTADO_PEND_LABEL = {no_iniciado:'No iniciado', en_proceso:'En proceso', cerrado:'Resuelto'};
+// Ciclo de vida del pendiente (nomenclatura de la especificación): Creado -> Abierto -> Cerrado.
+// Los valores internos se conservan (no_iniciado/en_proceso/cerrado) para no romper los ~12
+// conteos que comparan !== 'cerrado': solo cambia la ETIQUETA visible.
+//   no_iniciado = Creado (lo generó el programa, aún sin gestionar)
+//   en_proceso  = Abierto (en gestión, con plazo y recordatorio)
+//   cerrado     = Cerrado (resuelto, con fecha de cierre)
+const ESTADO_PEND_LABEL = {no_iniciado:'Creado', en_proceso:'Abierto', cerrado:'Cerrado'};
 function normalizarEstadoPend(e){
   if(e==='cerrado'||e==='resuelto') return 'cerrado';
   if(e==='en_proceso'||e==='en proceso') return 'en_proceso';
@@ -1557,6 +1583,64 @@ function el(tag, attrs={}, ...children){
   }
   return n;
 }
+// ---- Filtro de columna estilo Excel: elegir uno, varios o todos ----
+// Compartido por las planillas (Buscar equipos y Registro MP) para no divergir.
+// filtros[col.k] guarda un Set de valores elegidos; vacío o ausente = todos.
+function colFiltroActivo(filtros, k){ const s = filtros[k]; return s instanceof Set && s.size > 0; }
+function pasaFiltroCol(filtros, k, val){ const s = filtros[k]; return !(s instanceof Set) || s.size === 0 || s.has(val); }
+// Fija el filtro de una columna a UN valor (accesos rápidos / navegación desde el resumen).
+function setFiltroCol(filtros, k, valor){
+  if(valor == null || valor === '') delete filtros[k];
+  else filtros[k] = new Set([valor]);
+}
+// ¿Hay algún filtro de columna activo? (Set con elementos o texto en columnas de "contiene".)
+function hayFiltroCol(filtros){
+  return Object.keys(filtros).some(k => { const v = filtros[k]; return v instanceof Set ? v.size > 0 : !!v; });
+}
+// Popup único a nivel de body (evita que el contenedor con scroll lo recorte).
+function abrirChecklistFiltro(anchorBtn, col, valores, filtros, onChange){
+  document.querySelectorAll('.colf-pop').forEach(p => p.remove());
+  const cur = filtros[col.k] instanceof Set ? new Set(filtros[col.k]) : new Set();
+  const pop = el('div',{class:'colf-pop'});
+  const buscar = el('input',{type:'search',class:'colf-search',placeholder:'Buscar valor…'});
+  const lista = el('div',{class:'colf-list'});
+  const pintar = q => {
+    lista.innerHTML = '';
+    const qn = (q||'').toLowerCase();
+    valores.filter(v => !qn || v.toLowerCase().includes(qn)).forEach(v => {
+      const cb = el('input',{type:'checkbox', checked: cur.has(v) ? 'checked' : false,
+        onchange: e => { if(e.target.checked) cur.add(v); else cur.delete(v); }});
+      lista.appendChild(el('label',{class:'colf-item'}, cb, el('span',{}, v===''?'(vacío)':v)));
+    });
+  };
+  pintar('');
+  buscar.addEventListener('input', () => pintar(buscar.value));
+  const aplicar = () => { if(cur.size) filtros[col.k] = cur; else delete filtros[col.k]; pop.remove(); onChange(); };
+  pop.appendChild(el('div',{class:'colf-actions'},
+    el('button',{class:'small ghost',type:'button',onclick:()=>{ delete filtros[col.k]; pop.remove(); onChange(); }},'Todos'),
+    el('button',{class:'small primary',type:'button',onclick:aplicar},'Aplicar')
+  ));
+  pop.appendChild(buscar);
+  pop.appendChild(lista);
+  document.body.appendChild(pop);
+  const r = anchorBtn.getBoundingClientRect();
+  pop.style.left = Math.min(r.left, window.innerWidth - 300) + 'px';
+  pop.style.top = (r.bottom + 4) + 'px';
+  pop.addEventListener('click', e => e.stopPropagation());
+  setTimeout(() => buscar.focus(), 30);
+}
+// Celda de filtro (botón) para una columna de lista; abre el checklist.
+function celdaFiltroCol(col, valores, filtros, onChange){
+  const n = filtros[col.k] instanceof Set ? filtros[col.k].size : 0;
+  const btn = el('button',{class:'colf-btn'+(n?' activo':''), type:'button', title:'Filtrar '+col.l,
+    onclick: e => { e.stopPropagation(); abrirChecklistFiltro(btn, col, valores, filtros, onChange); }},
+    n ? `${n} sel. ▾` : '(todos) ▾');
+  return btn;
+}
+if(typeof window !== 'undefined' && !window.__colfBound){
+  window.__colfBound = true;
+  document.addEventListener('click', () => document.querySelectorAll('.colf-pop').forEach(p => p.remove()));
+}
 function fmt(v){ return v==null||v==='' ? '—' : v; }
 // FIX zona horaria: si el string es YYYY-MM-DD lo tratamos como fecha LOCAL,
 // no UTC, así no aparece corrida un día (Chile UTC-3/-4).
@@ -1777,8 +1861,8 @@ VIEWS.porResolver = function(root){
     el('div',{class:'pr-section-hd'}, el('h3',{style:urge?{color:'var(--noop)'}:null}, titulo), el('span',{class:'count'}, count)));
   const tarjetaPend = (p, color) => {
     const acts = el('div',{class:'pr-acts'});
-    if(p.estado==='no_iniciado') acts.appendChild(el('button',{class:'small',onclick:()=>cambiarEstadoPend(p,'en_proceso')},'Empezar'));
-    acts.appendChild(el('button',{class:'small primary',onclick:()=>cerrarPendiente(p)},'Resolver'));
+    if(p.estado==='no_iniciado') acts.appendChild(el('button',{class:'small',onclick:()=>cambiarEstadoPend(p,'en_proceso')},'Abrir'));
+    acts.appendChild(el('button',{class:'small primary',onclick:()=>cerrarPendiente(p)},'Cerrar'));
     return el('div',{class:'pr-card '+color},
       el('div',{class:'pr-body'},
         el('div',{class:'pr-title'}, (p.inv||'')+' · '+(p.equipo||'')),
@@ -1792,8 +1876,8 @@ VIEWS.porResolver = function(root){
     el('div',{class:'pr-acts'}, el('button',{class:'small'+(btnPrimary?' primary':''),onclick}, btnLabel)));
 
   if(venc.length){ const s=seccion('Vencidos', venc.length+' atrasado(s)', true); venc.forEach(p=>s.appendChild(tarjetaPend(p,'red'))); v.appendChild(s); }
-  if(noInic.length){ const s=seccion('No iniciados', noInic.length+' por empezar'); noInic.forEach(p=>s.appendChild(tarjetaPend(p,'gray'))); v.appendChild(s); }
-  if(enProc.length){ const s=seccion('En proceso', enProc.length+' en curso'); enProc.forEach(p=>s.appendChild(tarjetaPend(p,'amber'))); v.appendChild(s); }
+  if(noInic.length){ const s=seccion('Creados', noInic.length+' sin gestionar'); noInic.forEach(p=>s.appendChild(tarjetaPend(p,'gray'))); v.appendChild(s); }
+  if(enProc.length){ const s=seccion('Abiertos', enProc.length+' en gestión'); enProc.forEach(p=>s.appendChild(tarjetaPend(p,'amber'))); v.appendChild(s); }
   if(ciclos.length){ const s=seccion('Ciclos correctivos abiertos', String(ciclos.length));
     ciclos.slice(0,15).forEach(c=>{ const eq=findEquipo(c.inv);
       s.appendChild(tarjeta('teal', c.folio||'(sin folio)', (c.inv||'')+' · '+(eq?eq.equipo:'')+' · abierto '+fmtFecha(c.fechaApertura), 'Ver equipo', ()=>navigate('equipo',{inv:c.inv}))); });
@@ -2191,6 +2275,7 @@ VIEWS.equipos = function(root, params){
     {k:'id',l:'ID',g:e=>e.id!=null?String(e.id):'',num:true},
     {k:'carpeta',l:'N° Carpeta',g:e=>e.carpeta!=null?String(e.carpeta):'',num:true},
     {k:'inv',l:'N° Inventario',g:e=>e.inv||''},
+    {k:'serie',l:'Serie',g:e=>e.serie||''},
     {k:'equipo',l:'Equipo',g:e=>e.equipo||'',lista:true},
     {k:'servicio',l:'Servicio',g:e=>e.servicio||'',lista:true},
     {k:'unidad',l:'Unidad',g:e=>e.unidad||'',lista:true},
@@ -2208,8 +2293,8 @@ VIEWS.equipos = function(root, params){
   // y la tabla quedaba EN BLANCO al construir los filtros. Se normaliza una sola vez.
   COLS.forEach(c=>{ if(!c.num){ const _g=c.g; c.g=e=>{ const v=_g(e); return v==null?'':String(v); }; } });
   const filtros = {};
-  if(params.estado) filtros.estado = ESTADO_LABEL[params.estado] || params.estado;
-  if(params.servicio) filtros.servicio = params.servicio;
+  if(params.estado) setFiltroCol(filtros, 'estado', ESTADO_LABEL[params.estado] || params.estado);
+  if(params.servicio) setFiltroCol(filtros, 'servicio', params.servicio);
   let ordK = null, ordDir = 1;
   const search = el('input',{type:'search',placeholder:'Buscar en todo (N° Inv., serie, equipo, marca, modelo, servicio…)',value:params.q||''});
   const thead = el('thead',{});
@@ -2257,10 +2342,8 @@ VIEWS.equipos = function(root, params){
     COLS.forEach(c=>{
       let ctrl;
       if(c.lista){
-        ctrl = el('select',{onchange:e=>{ filtros[c.k]=e.target.value; render(); }},
-          el('option',{value:''},'(todos)'),
-          ...valoresUnicos(c).map(v=>el('option',{value:v}, v.length>24?v.slice(0,24)+'…':v)));
-        ctrl.value = filtros[c.k]||'';
+        // Filtro estilo Excel: elegir uno, varios o todos (checklist en popup).
+        ctrl = celdaFiltroCol(c, valoresUnicos(c), filtros, render);
       } else {
         ctrl = el('input',{type:'text',placeholder:'filtrar…',value:filtros[c.k]||'',oninput:e=>{ filtros[c.k]=e.target.value; clearTimeout(window.__eqf); window.__eqf=setTimeout(render,200); }});
       }
@@ -2279,10 +2362,9 @@ VIEWS.equipos = function(root, params){
         if(!tokens.every(t => hay.includes(t))) return false;
       }
       for(const c of COLS){
-        const fv = filtros[c.k]; if(!fv) continue;
         const val = c.g(e);
-        if(c.lista){ if(val !== fv) return false; }
-        else { if(!norm(val).includes(norm(fv))) return false; }
+        if(c.lista){ if(!pasaFiltroCol(filtros, c.k, val)) return false; }
+        else { const fv = filtros[c.k]; if(fv && !norm(val).includes(norm(fv))) return false; }
       }
       if(filtros.__conPend && !pendientesDe(e.inv).some(p=>p.estado!=='cerrado')) return false;
       return true;
@@ -2299,6 +2381,7 @@ VIEWS.equipos = function(root, params){
         el('td',{class:'num'}, e.id != null ? String(e.id) : '—'),
         el('td',{}, e.carpeta != null ? String(e.carpeta) : '—'),
         el('td',{}, el('strong',{}, e.inv||'—')),
+        el('td',{}, e.serie||'—'),
         el('td',{}, e.equipo||'—'),
         el('td',{}, e.servicio||'—'),
         el('td',{}, e.unidad||'—'),
@@ -2333,7 +2416,7 @@ VIEWS.equipos = function(root, params){
       el('span',{class:'k'}, k+':'), el('span',{}, v),
       el('span',{class:'x',onclick:onclr}, '×')
     )));
-    const hayCol = Object.keys(filtros).some(k=>filtros[k]);
+    const hayCol = hayFiltroCol(filtros);
     if(chips.length > 0 || hayCol || search.value){
       chipsBar.appendChild(el('button',{class:'filter-clear',onclick:()=>{
         Object.keys(params).forEach(k=>delete params[k]);
@@ -2351,13 +2434,13 @@ VIEWS.equipos = function(root, params){
   const _qa = (lbl, n, fn, cls) => el('button',{class:'qa-btn'+(cls?' '+cls:''), onclick:fn}, `${lbl} (${n})`);
   const barraQA = el('div',{class:'quick-access'},
     el('button',{class:'qa-btn',onclick:()=>{limpiarFiltros();render();}},'Todos'),
-    _qa('En servicio técnico', state.equipos.filter(e=>e.estado==='en_servicio_tecnico').length, ()=>{limpiarFiltros();filtros.estado='En servicio técnico';render();}, 'st'),
-    _qa('No operativos', state.equipos.filter(e=>e.estado==='no_operativo').length, ()=>{limpiarFiltros();filtros.estado='No operativo';render();}, 'noop'),
+    _qa('En servicio técnico', state.equipos.filter(e=>e.estado==='en_servicio_tecnico').length, ()=>{limpiarFiltros();setFiltroCol(filtros,'estado','En servicio técnico');render();}, 'st'),
+    _qa('No operativos', state.equipos.filter(e=>e.estado==='no_operativo').length, ()=>{limpiarFiltros();setFiltroCol(filtros,'estado','No operativo');render();}, 'noop'),
     _qa('Con pendientes', state.equipos.filter(e=>pendientesDe(e.inv).some(p=>p.estado!=='cerrado')).length, ()=>{limpiarFiltros();filtros.__conPend=true;render();})
   );
   root.appendChild(el('div',{class:'view'},
-    el('h2',{},'Equipos'),
-    el('div',{class:'subtitle'},'Planilla de equipos: ordena por cualquier columna (clic en su título), filtra en cada una y registra evento o pendiente desde la fila.'),
+    el('h2',{},'Buscar equipos'),
+    el('div',{class:'subtitle'},'Planilla de equipos: ordena por cualquier columna (clic en su título), filtra en cada una (uno, varios o todos los valores) y registra evento o pendiente desde la fila.'),
     barraQA,
     el('div',{class:'toolbar'}, el('div',{class:'grow'},search)),
     chipsBar,
@@ -2422,7 +2505,7 @@ VIEWS.registroMP = function(root){
     const trF = el('tr',{class:'filtros-col'});
     CS.forEach(c=>{
       let ctrl;
-      if(c.lista){ ctrl = el('select',{onchange:e=>{ filtros[c.k]=e.target.value; render(); }}, el('option',{value:''},'(todos)'), ...valoresUnicos(c).map(v=>el('option',{value:v}, v.length>16?v.slice(0,16)+'…':v))); ctrl.value = filtros[c.k]||''; }
+      if(c.lista){ ctrl = celdaFiltroCol(c, valoresUnicos(c), filtros, render); }
       else { ctrl = el('input',{type:'text',placeholder:'…',value:filtros[c.k]||'',oninput:e=>{ filtros[c.k]=e.target.value; clearTimeout(window.__rmf); window.__rmf=setTimeout(render,200); }}); }
       trF.appendChild(el('th',{class:c.mes?'mp-col':''}, ctrl));
     });
@@ -2435,7 +2518,7 @@ VIEWS.registroMP = function(root){
     const tokens = norm(search.value.trim()).split(/\s+/).filter(Boolean);
     let lista = state.equipos.filter(e=>{
       if(tokens.length){ const hay=[e.inv,e.serie,e.equipo,e.marca,e.modelo,e.servicio,e.unidad,e.ubic].map(norm).join(' '); if(!tokens.every(t=>hay.includes(t))) return false; }
-      for(const c of CS){ const fv=filtros[c.k]; if(!fv) continue; const val=c.g(e); if(c.lista){ if(val!==fv) return false; } else if(!norm(val).includes(norm(fv))) return false; }
+      for(const c of CS){ const val=c.g(e); if(c.lista){ if(!pasaFiltroCol(filtros,c.k,val)) return false; } else { const fv=filtros[c.k]; if(fv && !norm(val).includes(norm(fv))) return false; } }
       return true;
     });
     if(ordK){ const c=colByK(ordK); if(c) lista.sort((a,b)=> c.num?((+c.g(a)||0)-(+c.g(b)||0))*ordDir : c.g(a).localeCompare(c.g(b),'es')*ordDir); }
@@ -3136,9 +3219,9 @@ VIEWS.pendientes = function(root, params){
   if(params.tipo) selTipo.value = params.tipo;
   const selEst = el('select',{},
     el('option',{value:''},'Todos los estados'),
-    el('option',{value:'no_iniciado',selected:params.estado==='no_iniciado'?'selected':false},'No iniciado'),
-    el('option',{value:'en_proceso',selected:params.estado==='en_proceso'?'selected':false},'En proceso'),
-    el('option',{value:'cerrado',selected:params.estado==='cerrado'?'selected':false},'Resuelto')
+    el('option',{value:'no_iniciado',selected:params.estado==='no_iniciado'?'selected':false},'Creado'),
+    el('option',{value:'en_proceso',selected:params.estado==='en_proceso'?'selected':false},'Abierto'),
+    el('option',{value:'cerrado',selected:params.estado==='cerrado'?'selected':false},'Cerrado')
   );
   if(params.estado) selEst.value = params.estado;
   const selExec = el('select',{},
@@ -3203,20 +3286,25 @@ function renderPendientesTabla(list){
   const today = hoyLocal();
   return el('div',{style:{overflow:'auto'}},
     el('table',{class:'data'},
-      el('thead',{}, el('tr',{}, ['Equipo','Tipo','Descripción','Ejecutor','Compromiso','Estado','Acciones'].map(h=>el('th',{},h)))),
+      el('thead',{}, el('tr',{}, ['Equipo','Tipo','Descripción','Responsable','Ejecutor','Compromiso','Recordatorio','Gestión','Estado','Acciones'].map(h=>el('th',{},h)))),
       el('tbody',{}, ...list.map(p => {
         const vencido = p.fechaComp && p.fechaComp < today && p.estado !== 'cerrado';
+        const ultSeg = (p.seguimientos && p.seguimientos.length) ? p.seguimientos[p.seguimientos.length-1] : null;
+        const gestionTxt = ultSeg ? (fmtFecha(ultSeg.fecha)+': '+ultSeg.texto) : '';
         return el('tr',{},
           el('td',{}, el('strong',{}, p.inv||'—'), el('br'), el('small',{class:'muted'}, p.equipo||'')),
           el('td',{}, el('span',{class:'tag'}, TIPO_PENDIENTE[p.tipo]||p.tipo)),
-          el('td',{style:{maxWidth:'400px'}}, p.desc),
+          el('td',{style:{maxWidth:'320px'}}, p.desc),
+          el('td',{}, p.responsable||'—'),
           el('td',{}, p.ejecutor||'—'),
           el('td',{style:vencido?{color:'var(--danger)',fontWeight:'600'}:null}, fmtFecha(p.fechaComp)),
+          el('td',{}, fmtFecha(p.proxRecord)),
+          el('td',{style:{maxWidth:'260px'},title:gestionTxt}, gestionTxt ? el('small',{}, gestionTxt.length>80?gestionTxt.slice(0,80)+'…':gestionTxt) : el('small',{class:'muted'},'—')),
           el('td',{}, badgePend(p.estado)),
           el('td',{class:'actions'},
             el('button',{class:'small',onclick:()=>abrirPendiente(p)},'Ver'),
-            p.estado==='no_iniciado' ? el('button',{class:'small',onclick:()=>cambiarEstadoPend(p,'en_proceso')},'Empezar') : null,
-            p.estado !== 'cerrado' ? el('button',{class:'small primary',onclick:()=>cerrarPendiente(p)},'Resolver') : null,
+            p.estado==='no_iniciado' ? el('button',{class:'small',onclick:()=>cambiarEstadoPend(p,'en_proceso')},'Abrir') : null,
+            p.estado !== 'cerrado' ? el('button',{class:'small primary',onclick:()=>cerrarPendiente(p)},'Cerrar') : null,
             el('button',{class:'small ghost',onclick:()=>navigate('equipo',{inv:p.inv})},'Ficha')
           )
         );
@@ -4379,6 +4467,25 @@ function folioCicloControl(ciclosAb){
   sel.value = ciclosAb[0].folio;
   return sel;
 }
+// La Recepción se vincula a su Envío por el N° de envío, HEREDADO (no escrito a mano).
+// Igual que el folio: si el equipo tiene Envíos a servicio técnico, se preselecciona el
+// más reciente; si no hay ninguno, cae a un campo manual.
+function nEnvioRecepcionControl(inv){
+  // Reconoce la etiqueta canónica y la variante histórica ('Envío a Serv. Técnico')
+  // que traen los respaldos antiguos, para heredar el N° también de esos envíos.
+  const esEnvio = t => { const s = (t||'').toLowerCase(); return s.includes('env') && (s.includes('serv') || s.includes('técn') || s.includes('tecn')); };
+  const envios = state.eventos
+    .filter(ev => ev.inv === inv && !ev.anulado && esEnvio(ev.tipo) && ev.nEnvio)
+    .sort((a,b)=>(b.fecha||'').localeCompare(a.fecha||''));
+  if(!envios.length) return el('input',{type:'text',placeholder:'N° envío original'});
+  const sel = el('select',{},
+    ...envios.map(ev => el('option',{value:ev.nEnvio},
+      ev.nEnvio + (ev.empresa ? (' · ' + ev.empresa) : '') + (ev.fecha ? (' · ' + fmtFecha(ev.fecha)) : ''))),
+    el('option',{value:''},'— otro / a mano —')
+  );
+  sel.value = envios[0].nEnvio;
+  return sel;
+}
 // Aviso para eventos de cierre (Reparación / Recepción) cuando no hay ciclo abierto.
 function avisoSinCicloAbierto(){
   return el('div',{class:'notice warn'},
@@ -4479,7 +4586,7 @@ function nuevoEvento(opts){
         campos.appendChild(formField('Oficial',oficial));
         extra.estado = estadoFixed;
       } else if(tipo === 'Recepción'){
-        const nEnvio = el('input',{type:'text',placeholder:'N° envío original'});
+        const nEnvio = nEnvioRecepcionControl(invSel);
         const folioGuia = el('input',{type:'text'});
         const folio = folioCicloControl(ciclosAb);
         const estado = el('select',{}, el('option',{value:'no operativo'},'No operativo'), el('option',{value:'operativo'},'Operativo'));
@@ -4847,20 +4954,24 @@ function nuevoPendiente(opts){
   const dataList = el('datalist',{id:'eq-list-p'}, ...eqList.slice(0,200).map(e=>el('option',{value:e.inv}, `${e.inv} — ${e.equipo}`)));
   const tipo = el('select',{}, ...Object.entries(TIPO_PENDIENTE).map(([k,v])=>el('option',{value:k},v)));
   const desc = el('textarea',{placeholder:'Descripción del pendiente'});
+  const resp = el('input',{type:'text',placeholder:'Quién responde por el pendiente (persona o servicio)'});
   const ejec = el('select',{}, el('option',{value:''},'—'), ...EJECUTORES.map(x=>el('option',{value:x},x)));
   const fComp = el('input',{type:'date'});
   const fRec = el('input',{type:'date'});
 
   modal({title:'Nuevo pendiente',
-    hasUnsavedData: ()=> desc.value.trim() !== '' || ejec.value !== '' || fComp.value !== '' || fRec.value !== '',
+    hasUnsavedData: ()=> desc.value.trim() !== '' || resp.value.trim() !== '' || ejec.value !== '' || fComp.value !== '' || fRec.value !== '',
     body: el('div',{},
     el('div',{class:'grid-2'},
       formField('N° Inventario', el('div',{},invInput,dataList)),
       formField('Tipo', tipo)
     ),
     formField('Descripción', desc),
-    el('div',{class:'grid-3'},
-      formField('Ejecutor', ejec),
+    el('div',{class:'grid-2'},
+      formField('Responsable', resp),
+      formField('Ejecutor', ejec)
+    ),
+    el('div',{class:'grid-2'},
       formField('Fecha compromiso', fComp),
       formField('Próximo recordatorio', fRec)
     )
@@ -4875,6 +4986,7 @@ function nuevoPendiente(opts){
         id: state.counters.pend++,
         inv, equipo: eq.equipo, servicio: eq.servicio,
         tipo: tipo.value, desc: desc.value.trim(),
+        responsable: resp.value.trim()||null,
         ejecutor: ejec.value||null,
         fechaCrea: hoyLocal(),
         fechaComp: fComp.value||null, proxRecord: fRec.value||null,
@@ -4895,6 +5007,7 @@ function abrirPendiente(p){
   const desc = el('textarea',{},p.desc||'');
   const tipo = el('select',{}, ...Object.entries(TIPO_PENDIENTE).map(([k,v])=>el('option',{value:k,selected:k===p.tipo?'selected':false},v)));
   const ejec = el('select',{}, el('option',{value:''},'—'), ...EJECUTORES.map(x=>el('option',{value:x,selected:x===p.ejecutor?'selected':false},x)));
+  const resp = el('input',{type:'text',value:p.responsable||'',placeholder:'Persona o servicio responsable'});
   const estado = el('select',{}, ...['no_iniciado','en_proceso','cerrado'].map(s=>el('option',{value:s,selected:s===p.estado?'selected':false},ESTADO_PEND_LABEL[s])));
   const fComp = el('input',{type:'date',value:p.fechaComp||''});
   const fRec = el('input',{type:'date',value:p.proxRecord||''});
@@ -4980,8 +5093,8 @@ function abrirPendiente(p){
     ),
     el('div',{class:'grid-2'},
       formField('Tipo', tipo), formField('Estado', estado),
-      formField('Ejecutor', ejec),
-      formField('Equipo (resumen)', el('div',{style:{padding:'8px 0',color:'var(--muted)',fontSize:'13px'}}, `${p.inv} · ${eq.equipo||'—'}`))
+      formField('Responsable', resp),
+      formField('Ejecutor', ejec)
     ),
     el('div',{class:'pend-section'},
       el('label',{class:'pend-section-lbl'},'Descripción del pendiente'),
@@ -5015,6 +5128,7 @@ function abrirPendiente(p){
     el('button',{class:'primary',onclick:()=>{
       p.tipo = tipo.value;
       p.estado = estado.value;
+      p.responsable = resp.value.trim()||null;
       p.ejecutor = ejec.value||null;
       p.desc = desc.value;
       p.fechaComp = fComp.value||null;
@@ -5333,7 +5447,7 @@ function exportExcel(){
     ['Equipos', 'Catálogo de equipos con su estado actual.'],
     ['PMP_'+year, 'Programación anual de mantención (espejo de tu carta gantt / maestro).'],
     ['Registro_MP-'+year, 'Programado (P) y Realizado (R) de la MP, por mes.'],
-    ['Pendientes', 'Todos los pendientes con su estado (No iniciado / En proceso / Resuelto).'],
+    ['Pendientes', 'Todos los pendientes con su estado (Creado / Abierto / Cerrado).'],
     ['Ciclos correctivos', 'Ciclos de falla, con apertura y cierre.'],
     ['Eventos (automáticos)', 'HOJA OCULTA. Eventos que generó el programa al conciliar el maestro: NO los registraste tú. Para verla en Excel: clic derecho sobre una pestaña → Mostrar.'],
   ];
@@ -5400,14 +5514,19 @@ function exportExcel(){
   addPlain(XLSX.utils.aoa_to_sheet(regData), `Registro_MP-${year}`);
 
   // 6. Pendientes
-  const pendRows = state.pendientes.filter(p=>!p.anulado).map(p => ({
-    'ID': p.id, 'N° Inv.': p.inv, 'Equipo': p.equipo||'', 'Servicio': p.servicio||'',
-    'Tipo': TIPO_PENDIENTE[p.tipo]||p.tipo, 'Descripción': p.desc||'',
-    'Ejecutor': p.ejecutor||'',
-    'Fecha creación': fmtFecha(p.fechaCrea), 'Fecha compromiso': fmtFecha(p.fechaComp),
-    'Fecha cierre': fmtFecha(p.fechaCierre), 'Estado': ESTADO_PEND_LABEL[p.estado]||p.estado, 'Origen': p.origen||''
-  }));
-  tabla(pendRows, 'Pendientes', [{wch:5},{wch:13},{wch:22},{wch:20},{wch:18},{wch:42},{wch:20},{wch:14},{wch:15},{wch:13},{wch:13},{wch:14}]);
+  const pendRows = state.pendientes.filter(p=>!p.anulado).map(p => {
+    const ult = (p.seguimientos && p.seguimientos.length) ? p.seguimientos[p.seguimientos.length-1] : null;
+    return {
+      'ID': p.id, 'N° Inv.': p.inv, 'Equipo': p.equipo||'', 'Servicio': p.servicio||'',
+      'Tipo': TIPO_PENDIENTE[p.tipo]||p.tipo, 'Descripción': p.desc||'',
+      'Responsable': p.responsable||'', 'Ejecutor': p.ejecutor||'',
+      'Fecha creación': fmtFecha(p.fechaCrea), 'Fecha compromiso': fmtFecha(p.fechaComp),
+      'Recordatorio': fmtFecha(p.proxRecord), 'Fecha cierre': fmtFecha(p.fechaCierre),
+      'Estado': ESTADO_PEND_LABEL[p.estado]||p.estado, 'Origen': p.origen||'',
+      'Gestión (última)': ult ? (fmtFecha(ult.fecha)+': '+ult.texto) : ''
+    };
+  });
+  tabla(pendRows, 'Pendientes', [{wch:5},{wch:13},{wch:22},{wch:20},{wch:18},{wch:42},{wch:18},{wch:18},{wch:14},{wch:15},{wch:14},{wch:13},{wch:13},{wch:14},{wch:40}]);
 
   // 7. Conflictos (si hay)
   if(state.conflictos && state.conflictos.length > 0){
@@ -5737,7 +5856,7 @@ setInterval(()=>{ if(recorder.status==='recording') recorder.updateUI(); }, 1000
 // Barra lateral agrupada en los dos momentos del trabajo. Pendientes/Ciclos/Eventos
 // no van en el menú: se acceden desde "Por resolver" y desde la ficha del equipo.
 const NAV_GRUPOS = [
-  ['GESTIONAR', [['porResolver','Por resolver'],['equipos','Equipos'],['registroMP','Registro MP'],['dashboard','Resumen']]],
+  ['GESTIONAR', [['porResolver','Por resolver'],['equipos','Buscar equipos'],['registroMP','Registro MP'],['dashboard','Resumen']]],
   ['REGISTRAR', [['mp','MP del mes'],['conciliacion','Conciliación']]]
 ];
 function navBadge(k, b){

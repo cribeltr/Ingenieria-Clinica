@@ -522,4 +522,42 @@
 - **Dónde aplica:** tests/smoke.js (nuevo), package.json (`npm test`), CLAUDE.md (paso 5),
   docs/LEARNINGS.md.
 
+## [2026-05-29] Ajustes de la especificación funcional (v0.40)
+
+- **Disparador:** el usuario entregó `docs/Especificacion_funcional_Gestion_Equipos.docx`
+  (basado en v0.38) y pidió "incluir estos ajustes sin perder ninguna funcionalidad". El
+  documento es 90% descripción de lo ya existente; se cruzó contra el código y se separaron
+  los ajustes REALES de lo ya hecho y de las decisiones del capítulo 9 (no se tocaron).
+- **Confirmado con el usuario (AskUserQuestion):** implementar A (filtros multi-selección),
+  B (Recepción hereda N° envío), C (columna Serie + renombrar a "Buscar equipos") y E
+  (Pendientes: Responsable/Recordatorio/Gestión). Para los estados del pendiente, usar la
+  nomenclatura del documento (Creado/Abierto/Cerrado) — se hizo SOLO como etiqueta visible,
+  conservando los valores internos (no_iniciado/en_proceso/cerrado) para no romper los ~12
+  conteos `!== 'cerrado'` (misma técnica que v0.29).
+- **Hecho:**
+  - Filtro de columna multi-selección estilo Excel (checklist en popup a nivel de body para
+    no ser recortado por el contenedor con scroll). Helpers compartidos por las DOS planillas
+    (`colFiltroActivo`/`pasaFiltroCol`/`setFiltroCol`/`celdaFiltroCol`/`hayFiltroCol`): el
+    filtro pasó de string a Set; accesos rápidos y params se fijan con `setFiltroCol`.
+  - `nEnvioRecepcionControl(inv)`: la Recepción preselecciona el N° del último Envío. Detalle
+    clave: reconoce la etiqueta histórica `'Envío a Serv. Técnico'` además de la canónica
+    `'Envío a servicio técnico'` (la inconsistencia anotada en v0.26): sin eso, no heredaba
+    de los respaldos reales (lo cazó la prueba de humo).
+  - Columna Serie y título "Buscar equipos"; campo `responsable` en pendientes (form, tabla,
+    Excel) y columnas Recordatorio (proxRecord) y Gestión (último seguimiento).
+- **Validado:** prueba de humo ampliada a 14 chequeos (multi-selección, Recepción hereda N°,
+  columnas y estados de pendiente) — 14/14 con datos reales de `data/`.
+- **Heurística:** (1) una "especificación" mayormente descriptiva NO es una lista de tareas:
+  hay que cruzarla con el código y confirmar el alcance antes de tocar (REGLA #0); las
+  decisiones del cap. 9 son del usuario. (2) Al implementar un patrón que ya está duplicado
+  en 2 vistas (planillas), extraer helpers compartidos en vez de duplicar el cambio. (3) Las
+  etiquetas históricas inconsistentes ('Envío a Serv. Técnico') siguen vivas en los datos
+  reales: toda lógica que dependa del tipo de evento debe reconocer las variantes.
+- **Pendiente detectado (no tocado):** unificar de raíz la etiqueta del Envío en todo el
+  programa (TIPOS_EVENTO vs datos) sigue abierto; hoy se mitiga por reconocimiento flexible.
+- **Dónde aplica:** build_app.py (helpers de filtro + CSS `.colf-*`, `VIEWS.equipos`,
+  `VIEWS.registroMP`, `nEnvioRecepcionControl`, formulario Recepción, `nuevoPendiente`/
+  `abrirPendiente`, `renderPendientesTabla`, export Pendientes, `ESTADO_PEND_LABEL` y textos);
+  tests/smoke.js (3 chequeos nuevos); CHANGELOG v0.40; app.html regenerado.
+
 <!-- Próximas entradas debajo de esta línea -->
