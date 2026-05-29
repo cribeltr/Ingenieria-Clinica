@@ -176,6 +176,53 @@ function check(name, ok, detail){ results.push({ name, ok: !!ok, detail: detail 
   const estadosOk = ['Creado','Abierto','Cerrado'].every(s => opts.includes(s));
   check('Pendientes: estados del documento (Creado/Abierto/Cerrado)', estadosOk, ['Creado','Abierto','Cerrado'].filter(s => opts.includes(s)).join(', ') || '—');
 
+  // --- #1) Clic en la fila de Buscar equipos abre la ficha (sin botón) ---
+  try { w.navigate('equipos'); } catch(e){}
+  await sleep(250);
+  const row = w.document.querySelector('table.eq-grid tbody tr.eq-row');
+  let clickOk = false, clickDet = 'no había filas';
+  if(row){
+    row.dispatchEvent(new w.Event('click', { bubbles: true }));
+    await sleep(200);
+    clickOk = !w.document.querySelector('table.eq-grid tbody tr.eq-row'); // la planilla se reemplazó por la ficha
+    clickDet = clickOk ? 'la fila abrió la ficha' : 'no cambió de vista';
+  }
+  check('Buscar equipos: clic en la fila abre la ficha', clickOk, clickDet);
+
+  // --- #2) El historial muestra los resultados de la carta Gantt (derivados, sin evento real) ---
+  // Determinista: pongo una R en un mes que no tenga evento MP y compruebo que aparece derivada.
+  let ganttOk = false, ganttDet = 'sin función';
+  if(typeof w.eventosGanttDerivados === 'function'){
+    const eq = w.findEquipo(backup.equipos[0].inv);
+    const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+    for(const mes of meses){
+      eq.registro = { [mes]: { R:'Si' } };
+      const der = w.eventosGanttDerivados(eq);
+      if(der.some(d => d.mes === mes && d.resultado === 'Si')){ ganttOk = true; ganttDet = `R en ${mes} sin evento → aparece en el historial`; break; }
+    }
+    if(!ganttOk) ganttDet = 'no apareció la entrada derivada';
+  }
+  check('Historial: muestra los resultados de la carta Gantt', ganttOk, ganttDet);
+
+  // --- #3) MP con causal C1-C8 → 'R' en la programación del mes siguiente (si está vacío) ---
+  let reprogOk = false, reprogDet = 'sin función';
+  if(typeof w.aplicarEfectosEvento === 'function'){
+    const e0 = backup.equipos[1] || backup.equipos[0];
+    const eq = w.findEquipo(e0.inv);
+    if(eq){
+      eq.registro = eq.registro || {};
+      delete eq.registro['Feb']; // asegurar mes siguiente vacío para la prueba
+      const yy = new Date().getFullYear();
+      w.aplicarEfectosEvento({ inv:e0.inv, tipo:'Mantención preventiva', resultado:'C1', fecha:yy+'-01-10', id:999999, ejecutor:'Test' });
+      reprogOk = !!(eq.registro['Feb'] && eq.registro['Feb'].P === 'R');
+      reprogDet = `Ene C1 → Feb.P = ${eq.registro['Feb'] ? eq.registro['Feb'].P : '—'}`;
+    }
+  }
+  check('MP con causal: R de reprogramación en el mes siguiente', reprogOk, reprogDet);
+
+  // --- #4) Existe la opción de imprimir el registro de eventos ---
+  check('Imprimir: función de impresión del historial disponible', typeof w.imprimirBitacora === 'function', typeof w.imprimirBitacora);
+
   // --- Sin errores de JavaScript en pantalla durante el recorrido ---
   check('Sin errores de JavaScript en el recorrido', pageErrors.length === 0, pageErrors[0] ? pageErrors[0].split('\n')[0] : '');
 

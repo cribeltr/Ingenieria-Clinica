@@ -560,4 +560,34 @@
   `abrirPendiente`, `renderPendientesTabla`, export Pendientes, `ESTADO_PEND_LABEL` y textos);
   tests/smoke.js (3 chequeos nuevos); CHANGELOG v0.40; app.html regenerado.
 
+## [2026-05-29] Ficha/planilla: clic en fila, Gantt en historial, reprogramación, imprimir (v0.41)
+
+- **Disparador:** 4 pedidos del usuario sobre la ficha y la planilla. Se confirmaron con él
+  las 2 decisiones de fondo (AskUserQuestion) antes de tocar: (2) mostrar los resultados de
+  la carta Gantt en el historial de forma DERIVADA (sin crear eventos) y (3) poner la 'R' de
+  reprogramación en el mes siguiente SOLO si está vacío (y revertir al anular).
+- **Hecho:**
+  1. Buscar equipos: la fila completa (`tr.eq-row`) abre la ficha; se quitó el botón "Ficha"
+     (evita el scroll lateral incómodo). Los botones ➕ de la fila usan `stopPropagation`.
+  2. `eventosGanttDerivados(eq)`: por cada mes con `registro[mes].R` SIN evento MP real ese
+     mes, genera una fila derivada (fecha = día 15, año vigente) que `renderBitacora` mezcla
+     con los eventos reales. No se persiste. Clave: con respaldos que ya traen eventos
+     sintéticos (conciliación) no aparece nada (no duplica); el caso real es cuando la matriz
+     tiene R pero no hay evento (datos cargados del maestro).
+  3. En `aplicarEfectosEvento`, MP con causal C1-C8 escribe `registro[mesSiguiente].P='R'`
+     (flag `__reprogPorCausal`) solo si está vacío; `anularEventoAplicar` lo revierte si no
+     queda otra causal viva del mismo mes. Mismo patrón espejado apply/anular (invariante).
+  4. `imprimirBitacora(eq)`: abre una ventana con una tabla limpia (eventos reales + derivados
+     de la Gantt) e invoca `window.print()`. Botón 🖨 Imprimir en el encabezado del historial.
+- **Validado:** prueba de humo ampliada a 18 chequeos (clic-fila→ficha, Gantt derivado con un
+  mes sin evento, reprogramación Ene·C1→Feb.P='R', función de impresión presente) — 18/18.
+- **Heurística de PRUEBA:** el chequeo del Gantt derivado FALLÓ primero con `data/04` porque
+  ese respaldo ya tiene un evento sintético por cada R de la matriz (no hay R huérfano). La
+  prueba se volvió DETERMINISTA (inyecta una R en un mes sin evento) en vez de depender de que
+  el backup tenga el caso. Lección: si un chequeo depende de una condición que no todos los
+  datos cumplen, constrúyela en el test, no la asumas.
+- **Dónde aplica:** build_app.py (`VIEWS.equipos` fila/acciones, `eventosGanttDerivados`,
+  `renderBitacora`, `imprimirBitacora`, `aplicarEfectosEvento`/`anularEventoAplicar`, CSS
+  `.eq-row`/`.ev.gantt`); tests/smoke.js (4 chequeos nuevos); CHANGELOG v0.41.
+
 <!-- Próximas entradas debajo de esta línea -->

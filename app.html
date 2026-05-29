@@ -19,6 +19,17 @@ break;case"<bookViews":;case"<bookViews>":;case"</bookViews>":break;case"<workbo
 <script>var LZString=function(){var r=String.fromCharCode,o="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",n="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-$",e={};function t(r,o){if(!e[r]){e[r]={};for(var n=0;n<r.length;n++)e[r][r.charAt(n)]=n}return e[r][o]}var i={compressToBase64:function(r){if(null==r)return"";var n=i._compress(r,6,function(r){return o.charAt(r)});switch(n.length%4){default:case 0:return n;case 1:return n+"===";case 2:return n+"==";case 3:return n+"="}},decompressFromBase64:function(r){return null==r?"":""==r?null:i._decompress(r.length,32,function(n){return t(o,r.charAt(n))})},compressToUTF16:function(o){return null==o?"":i._compress(o,15,function(o){return r(o+32)})+" "},decompressFromUTF16:function(r){return null==r?"":""==r?null:i._decompress(r.length,16384,function(o){return r.charCodeAt(o)-32})},compressToUint8Array:function(r){for(var o=i.compress(r),n=new Uint8Array(2*o.length),e=0,t=o.length;e<t;e++){var s=o.charCodeAt(e);n[2*e]=s>>>8,n[2*e+1]=s%256}return n},decompressFromUint8Array:function(o){if(null==o)return i.decompress(o);for(var n=new Array(o.length/2),e=0,t=n.length;e<t;e++)n[e]=256*o[2*e]+o[2*e+1];var s=[];return n.forEach(function(o){s.push(r(o))}),i.decompress(s.join(""))},compressToEncodedURIComponent:function(r){return null==r?"":i._compress(r,6,function(r){return n.charAt(r)})},decompressFromEncodedURIComponent:function(r){return null==r?"":""==r?null:(r=r.replace(/ /g,"+"),i._decompress(r.length,32,function(o){return t(n,r.charAt(o))}))},compress:function(o){return i._compress(o,16,function(o){return r(o)})},_compress:function(r,o,n){if(null==r)return"";var e,t,i,s={},u={},a="",p="",c="",l=2,f=3,h=2,d=[],m=0,v=0;for(i=0;i<r.length;i+=1)if(a=r.charAt(i),Object.prototype.hasOwnProperty.call(s,a)||(s[a]=f++,u[a]=!0),p=c+a,Object.prototype.hasOwnProperty.call(s,p))c=p;else{if(Object.prototype.hasOwnProperty.call(u,c)){if(c.charCodeAt(0)<256){for(e=0;e<h;e++)m<<=1,v==o-1?(v=0,d.push(n(m)),m=0):v++;for(t=c.charCodeAt(0),e=0;e<8;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}else{for(t=1,e=0;e<h;e++)m=m<<1|t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t=0;for(t=c.charCodeAt(0),e=0;e<16;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}0==--l&&(l=Math.pow(2,h),h++),delete u[c]}else for(t=s[c],e=0;e<h;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1;0==--l&&(l=Math.pow(2,h),h++),s[p]=f++,c=String(a)}if(""!==c){if(Object.prototype.hasOwnProperty.call(u,c)){if(c.charCodeAt(0)<256){for(e=0;e<h;e++)m<<=1,v==o-1?(v=0,d.push(n(m)),m=0):v++;for(t=c.charCodeAt(0),e=0;e<8;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}else{for(t=1,e=0;e<h;e++)m=m<<1|t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t=0;for(t=c.charCodeAt(0),e=0;e<16;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}0==--l&&(l=Math.pow(2,h),h++),delete u[c]}else for(t=s[c],e=0;e<h;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1;0==--l&&(l=Math.pow(2,h),h++)}for(t=2,e=0;e<h;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1;for(;;){if(m<<=1,v==o-1){d.push(n(m));break}v++}return d.join("")},decompress:function(r){return null==r?"":""==r?null:i._decompress(r.length,32768,function(o){return r.charCodeAt(o)})},_decompress:function(o,n,e){var t,i,s,u,a,p,c,l=[],f=4,h=4,d=3,m="",v=[],g={val:e(0),position:n,index:1};for(t=0;t<3;t+=1)l[t]=t;for(s=0,a=Math.pow(2,2),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;switch(s){case 0:for(s=0,a=Math.pow(2,8),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;c=r(s);break;case 1:for(s=0,a=Math.pow(2,16),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;c=r(s);break;case 2:return""}for(l[3]=c,i=c,v.push(c);;){if(g.index>o)return"";for(s=0,a=Math.pow(2,d),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;switch(c=s){case 0:for(s=0,a=Math.pow(2,8),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;l[h++]=r(s),c=h-1,f--;break;case 1:for(s=0,a=Math.pow(2,16),p=1;p!=a;)u=g.val&g.position,g.position>>=1,0==g.position&&(g.position=n,g.val=e(g.index++)),s|=(u>0?1:0)*p,p<<=1;l[h++]=r(s),c=h-1,f--;break;case 2:return v.join("")}if(0==f&&(f=Math.pow(2,d),d++),l[c])m=l[c];else{if(c!==h)return null;m=i+i.charAt(0)}v.push(m),l[h++]=i+m.charAt(0),i=m,0==--f&&(f=Math.pow(2,d),d++)}}};return i}();"function"==typeof define&&define.amd?define(function(){return LZString}):"undefined"!=typeof module&&null!=module?module.exports=LZString:"undefined"!=typeof angular&&null!=angular&&angular.module("LZString",[]).factory("LZString",function(){return LZString});</script>
 <!--
 CHANGELOG
+v0.41 [2026-05-29] Ficha y planilla: clic en fila, carta Gantt en historial, reprog. e imprimir.
+  - Buscar equipos: la fila completa abre la ficha al hacer clic (se quitó el botón "Ficha")
+    para no tener que desplazarse a la derecha. Los botones ➕ Evento / ➕ Pend. de la fila no
+    abren la ficha (stopPropagation).
+  - Historial de eventos: ahora muestra también los resultados de la CARTA GANTT (matriz MP)
+    como entradas derivadas (badge 📋 Carta Gantt, fecha estimada día 15), solo para los meses
+    con resultado que no tengan ya un evento real. No crea eventos: es una vista derivada.
+  - MP con causal C1-C8: al registrarla aparece de inmediato una "R" (reprogramado) en la
+    PROGRAMACIÓN del mes siguiente, solo si ese mes está vacío; al anular la MP se revierte.
+  - Imprimir: nuevo botón 🖨 Imprimir en el historial de eventos de la ficha (abre una vista
+    limpia e invoca la impresión del navegador; incluye eventos reales y los de la carta Gantt).
 v0.40 [2026-05-29] Ajustes de la especificación funcional (sin perder funcionalidad).
   - Filtros de columna estilo Excel con selección MÚLTIPLE: en Buscar equipos y Registro MP
     cada columna de lista abre un checklist (uno, varios o todos los valores), con buscador.
@@ -144,7 +155,7 @@ v0.28 [2026-05-28] El folio del ciclo se preselecciona; aviso si no hay ciclo ab
     (antes era la misma expresión repetida 5 veces).
 v0.27 [2026-05-28] El número de versión del encabezado se sincroniza solo.
   - El encabezado mostraba "v0.23" fijo (escrito a mano), sin actualizarse al subir
-    APP_VERSION en versiones siguientes. Ahora usa el placeholder 0.40
+    APP_VERSION en versiones siguientes. Ahora usa el placeholder 0.41
     que build_app.py reemplaza con el valor real de APP_VERSION al generar: una
     sola fuente de verdad, no vuelve a quedar desfasado.
 v0.26 [2026-05-28] Cierre de ciclo por Recepción + Reparación "en servicio técnico".
@@ -571,6 +582,9 @@ tr.filtros-col input,tr.filtros-col select{width:100%;font-size:11px;padding:5px
 .colf-item{display:flex;align-items:center;gap:8px;font-size:12px;padding:4px 5px;border-radius:5px;cursor:pointer;font-weight:400}
 .colf-item:hover{background:var(--surface-2)}
 .colf-item input{width:auto!important;margin:0;cursor:pointer}
+table.eq-grid tbody tr.eq-row{cursor:pointer}
+table.eq-grid tbody tr.eq-row:hover{background:var(--surface-2)}
+.bitacora .ev.gantt{border-left:3px dashed var(--accent);background:var(--surface-2)}
 .mp-col{text-align:center;min-width:30px}
 td.mp-ok{color:var(--op);font-weight:700}
 td.mp-rep{color:var(--st);font-weight:600}
@@ -994,7 +1008,7 @@ header.top nav .nav-more-menu button.active{background:var(--accent-soft);color:
 <body>
 <div class="app">
   <aside class="sidebar">
-    <div class="s-logo">HHHA <small>Equipos Críticos · v0.40</small></div>
+    <div class="s-logo">HHHA <small>Equipos Críticos · v0.41</small></div>
     <nav id="nav"></nav>
     <div class="s-foot"><span class="user-tag">👤 Cristian</span></div>
   </aside>
@@ -1042,7 +1056,7 @@ const SEED = {"equipos":[{"id":1,"carpeta":1,"inv":"2-115361","fam":"Incubadoras
 //==============================================================
 // CONSTANTES & CATÁLOGOS
 //==============================================================
-const APP_VERSION = '0.40';
+const APP_VERSION = '0.41';
 const STORAGE_KEY = 'hhha_v1_data';
 const MESES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 const MES_NUM = {Ene:0,Feb:1,Mar:2,Abr:3,May:4,Jun:5,Jul:6,Ago:7,Sep:8,Oct:9,Nov:10,Dic:11};
@@ -1550,6 +1564,14 @@ function aplicarEfectosEvento(ev){
       crearPendienteAuto(ev.inv, 'reprogramacion',
         `Reprogramar MP por causal ${r} — ${c.desc}. ${c.reprog30?'Reprogramar dentro de 30 días.':'Esperar reintegro del equipo.'}`,
         ev.ejecutor, ev.id, fechaComp);
+      // Reprogramación: marca 'R' (reprogramado) en la PROGRAMACIÓN del mes siguiente,
+      // solo si ese mes está vacío (no pisa una MP ya programada). Se quita al anular.
+      const nextMes = NUM_MES[(mesIdx + 1) % 12];
+      eq.registro[nextMes] = eq.registro[nextMes] || {};
+      if(!eq.registro[nextMes].P){
+        eq.registro[nextMes].P = 'R';
+        eq.registro[nextMes].__reprogPorCausal = true;
+      }
     }
     if(r === 'NU'){
       crearPendienteAuto(ev.inv,'gestion_general','Localizar equipo (resultado MP = NU)',ev.ejecutor,ev.id,null);
@@ -2377,7 +2399,7 @@ VIEWS.equipos = function(root, params){
     tbody.innerHTML = '';
     lista.slice(0,500).forEach(e => {
       const pend = pendientesDe(e.inv).filter(p => p.estado !== 'cerrado').length;
-      tbody.appendChild(el('tr',{},
+      tbody.appendChild(el('tr',{class:'eq-row',title:'Abrir ficha',onclick:()=>navigate('equipo',{inv:e.inv})},
         el('td',{class:'num'}, e.id != null ? String(e.id) : '—'),
         el('td',{}, e.carpeta != null ? String(e.carpeta) : '—'),
         el('td',{}, el('strong',{}, e.inv||'—')),
@@ -2393,9 +2415,8 @@ VIEWS.equipos = function(root, params){
         el('td',{class:'num'}, pend > 0 ? el('span',{class:'badge abierto'},pend) : el('small',{class:'muted'},'—')),
         el('td',{class:'num'}, e.estadoDesde ? diasEnEstado(e)+' d' : el('small',{class:'muted'},'—')),
         el('td',{class:'actions',style:{whiteSpace:'nowrap'}},
-          el('button',{class:'small',title:'Registrar evento',onclick:()=>nuevoEvento({invDefault:e.inv})},'➕ Evento'),
-          el('button',{class:'small',title:'Registrar pendiente',onclick:()=>nuevoPendiente({invDefault:e.inv})},'➕ Pend.'),
-          el('button',{class:'small ghost',title:'Abrir ficha',onclick:()=>navigate('equipo',{inv:e.inv})},'Ficha')
+          el('button',{class:'small',title:'Registrar evento',onclick:ev=>{ev.stopPropagation();nuevoEvento({invDefault:e.inv});}},'➕ Evento'),
+          el('button',{class:'small',title:'Registrar pendiente',onclick:ev=>{ev.stopPropagation();nuevoPendiente({invDefault:e.inv});}},'➕ Pend.')
         )
       ));
     });
@@ -2440,7 +2461,7 @@ VIEWS.equipos = function(root, params){
   );
   root.appendChild(el('div',{class:'view'},
     el('h2',{},'Buscar equipos'),
-    el('div',{class:'subtitle'},'Planilla de equipos: ordena por cualquier columna (clic en su título), filtra en cada una (uno, varios o todos los valores) y registra evento o pendiente desde la fila.'),
+    el('div',{class:'subtitle'},'Planilla de equipos: haz clic en una fila para abrir su ficha. Ordena por cualquier columna (clic en su título), filtra en cada una (uno, varios o todos los valores) y registra evento o pendiente con los botones de la fila.'),
     barraQA,
     el('div',{class:'toolbar'}, el('div',{class:'grow'},search)),
     chipsBar,
@@ -2737,20 +2758,57 @@ function renderMatrizMP(eq){
   );
 }
 
+// Entradas derivadas de la carta Gantt: por cada mes con resultado (R) en la matriz que NO
+// tenga ya un evento MP real, se muestra una fila derivada en el historial (no es un evento
+// real: no se guarda ni se edita). Fecha asumida = día 15 del mes, año vigente.
+function eventosGanttDerivados(eq){
+  const year = new Date().getFullYear();
+  const mesesConEventoMP = new Set(
+    state.eventos.filter(e => e.inv === eq.inv && !e.anulado && e.tipo === 'Mantención preventiva' && e.fecha)
+      .map(e => new Date(e.fecha + 'T00:00:00').getMonth())
+  );
+  const out = [];
+  Object.keys(eq.registro || {}).forEach(mes => {
+    const reg = eq.registro[mes] || {};
+    if(!reg.R) return;
+    const mIdx = MES_NUM[mes];
+    if(mIdx == null || mesesConEventoMP.has(mIdx)) return;
+    out.push({ __gantt:true, tipo:'Mantención preventiva', resultado:reg.R, mes,
+      fecha:`${year}-${String(mIdx+1).padStart(2,'0')}-15` });
+  });
+  return out;
+}
 function renderBitacora(eq){
   const todos = eventosDeTodos(eq.inv).slice().reverse();
   const activos = todos.filter(e => !e.anulado);
   const anulados = todos.filter(e => e.anulado);
-  if(todos.length === 0) return el('div',{class:'empty'},'Sin eventos registrados.');
+  const gantt = eventosGanttDerivados(eq);
+  // Mezcla eventos reales + derivados de la carta Gantt, más nuevos arriba.
+  const filas = [...todos, ...gantt].sort((a,b)=>(b.fecha||'').localeCompare(a.fecha||''));
+  if(filas.length === 0) return el('div',{class:'empty'},'Sin eventos registrados.');
+  const resumen = [];
+  if(anulados.length > 0) resumen.push(`${activos.length} activo${activos.length!==1?'s':''} · ${anulados.length} anulado${anulados.length!==1?'s':''}`);
+  if(gantt.length > 0) resumen.push(`${gantt.length} de la carta Gantt`);
   return el('div',{class:'section'},
     el('h3',{},
       'Bitácora — hoja de vida',
-      anulados.length > 0
-        ? el('small',{style:{fontWeight:'400',color:'var(--muted)',marginLeft:'8px',textTransform:'none',letterSpacing:'0'}},
-            `${activos.length} activo${activos.length!==1?'s':''} · ${anulados.length} anulado${anulados.length!==1?'s':''}`)
-        : null
+      resumen.length
+        ? el('small',{style:{fontWeight:'400',color:'var(--muted)',marginLeft:'8px',textTransform:'none',letterSpacing:'0'}}, resumen.join(' · '))
+        : null,
+      el('button',{class:'small ghost',style:{marginLeft:'10px',fontWeight:'400'},title:'Imprimir el registro de eventos',onclick:()=>imprimirBitacora(eq)},'🖨 Imprimir')
     ),
-    el('div',{class:'bitacora'}, ...todos.map(ev => el('div',{class:'ev'+(ev.anulado?' anulado':'')+(ev.origen==='conciliacion_auto'||ev.origen==='conciliacion'?' auto':'')},
+    el('div',{class:'bitacora'}, ...filas.map(ev => ev.__gantt
+      ? el('div',{class:'ev gantt'},
+          el('div',{class:'hd'},
+            el('div',{}, el('strong',{}, ev.tipo), ' ',
+              el('span',{class:'badge auto-badge',title:'Resultado tomado de la carta Gantt (matriz de MP). No es un evento registrado; la fecha es estimada (día 15).'},'📋 Carta Gantt'),
+              el('span',{class:'pill'}, 'R: '+ev.resultado)
+            ),
+            el('span',{class:'fecha'}, ev.mes+' '+(new Date().getFullYear()), el('small',{class:'muted',style:{display:'block',fontSize:'10px',marginTop:'2px'}},'fecha estimada'))
+          ),
+          el('div',{class:'meta'}, 'Origen: carta Gantt del año vigente')
+        )
+      : el('div',{class:'ev'+(ev.anulado?' anulado':'')+(ev.origen==='conciliacion_auto'||ev.origen==='conciliacion'?' auto':'')},
       el('div',{class:'hd'},
         el('div',{}, el('strong',{}, ev.tipo), ' ',
           ev.anulado ? el('span',{class:'badge anulado-badge'},'Anulado') :
@@ -2783,6 +2841,32 @@ function renderBitacora(eq){
       ) : null
     )))
   );
+}
+
+// Imprimir el registro de eventos del equipo (eventos reales + derivados de la carta Gantt).
+function imprimirBitacora(eq){
+  const reales = eventosDeTodos(eq.inv).filter(e => !e.anulado);
+  const gantt = eventosGanttDerivados(eq);
+  const filas = [...reales, ...gantt].sort((a,b)=>(a.fecha||'').localeCompare(b.fecha||''));
+  if(filas.length === 0){ toast('No hay eventos para imprimir.','warn'); return; }
+  const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const rows = filas.map(ev => {
+    const origen = ev.__gantt ? 'Carta Gantt (est.)' : (ev.oficial==='Sí' ? 'Oficial' : 'Borrador');
+    const resEstado = [ev.resultado?('R: '+ev.resultado):'', ev.estado?('Estado: '+ev.estado):''].filter(Boolean).join(' · ');
+    return `<tr><td>${esc(fmtFecha(ev.fecha))}</td><td>${esc(ev.tipo)}</td><td>${esc(resEstado)}</td><td>${esc(ev.ejecutor||'')}</td><td>${esc(ev.folio||'')}</td><td>${esc(ev.obs||'')}</td><td>${esc(origen)}</td></tr>`;
+  }).join('');
+  const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Historial de eventos · ${esc(eq.inv)}</title>`
+    + `<style>body{font-family:Arial,Helvetica,sans-serif;color:#111;margin:24px}h1{font-size:18px;margin:0 0 2px}`
+    + `h2{font-size:12px;font-weight:400;color:#555;margin:0 0 14px}table{width:100%;border-collapse:collapse;font-size:11px}`
+    + `th,td{border:1px solid #bbb;padding:5px 7px;text-align:left;vertical-align:top}th{background:#eee}</style></head><body>`
+    + `<h1>Historial de eventos — ${esc(eq.equipo||'')} (${esc(eq.inv)})</h1>`
+    + `<h2>Serie ${esc(eq.serie||'—')} · ${esc(eq.servicio||'')} · ${esc(eq.unidad||'')} · Impreso ${esc(new Date().toLocaleString('es-CL'))}</h2>`
+    + `<table><thead><tr><th>Fecha</th><th>Tipo</th><th>Resultado / Estado</th><th>Ejecutor</th><th>Folio</th><th>Observación</th><th>Origen</th></tr></thead><tbody>${rows}</tbody></table>`
+    + `</body></html>`;
+  const win = window.open('', '_blank');
+  if(!win){ toast('El navegador bloqueó la ventana de impresión. Permite ventanas emergentes para imprimir.','error'); return; }
+  win.document.write(html); win.document.close(); win.focus();
+  setTimeout(()=>{ try{ win.print(); }catch(e){} }, 300);
 }
 
 function renderCiclos(eq){
@@ -4891,6 +4975,21 @@ function anularEventoAplicar(ev, motivo){
         } else {
           eq.registro[mes].R = otrasMP[0].resultado;
           revertidos.push(`R de ${mes} cambiado a ${otrasMP[0].resultado} (de otra MP)`);
+        }
+      }
+      // Reprogramación por causal: quitar la 'R' que esta MP puso en el mes siguiente,
+      // salvo que otra causal viva del mismo mes la justifique.
+      if(/^C[1-8]$/.test(ev.resultado||'')){
+        const nextMes = MESES[m % 12];
+        const otrasCausal = state.eventos.filter(x =>
+          x.id !== ev.id && !x.anulado && x.inv === ev.inv && x.tipo === 'Mantención preventiva' &&
+          /^C[1-8]$/.test(x.resultado||'') && x.fecha && new Date(x.fecha+'T00:00:00').getMonth() === (m-1));
+        if(otrasCausal.length === 0 && eq.registro && eq.registro[nextMes] &&
+           eq.registro[nextMes].__reprogPorCausal && eq.registro[nextMes].P === 'R'){
+          delete eq.registro[nextMes].P;
+          delete eq.registro[nextMes].__reprogPorCausal;
+          if(Object.keys(eq.registro[nextMes]).length === 0) delete eq.registro[nextMes];
+          revertidos.push(`R (reprogramación) de ${nextMes} eliminada`);
         }
       }
     }

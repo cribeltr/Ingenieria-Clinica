@@ -17,6 +17,17 @@ HTML = r"""<!DOCTYPE html>
 <script>__LZSTRING_PLACEHOLDER__</script>
 <!--
 CHANGELOG
+v0.41 [2026-05-29] Ficha y planilla: clic en fila, carta Gantt en historial, reprog. e imprimir.
+  - Buscar equipos: la fila completa abre la ficha al hacer clic (se quitó el botón "Ficha")
+    para no tener que desplazarse a la derecha. Los botones ➕ Evento / ➕ Pend. de la fila no
+    abren la ficha (stopPropagation).
+  - Historial de eventos: ahora muestra también los resultados de la CARTA GANTT (matriz MP)
+    como entradas derivadas (badge 📋 Carta Gantt, fecha estimada día 15), solo para los meses
+    con resultado que no tengan ya un evento real. No crea eventos: es una vista derivada.
+  - MP con causal C1-C8: al registrarla aparece de inmediato una "R" (reprogramado) en la
+    PROGRAMACIÓN del mes siguiente, solo si ese mes está vacío; al anular la MP se revierte.
+  - Imprimir: nuevo botón 🖨 Imprimir en el historial de eventos de la ficha (abre una vista
+    limpia e invoca la impresión del navegador; incluye eventos reales y los de la carta Gantt).
 v0.40 [2026-05-29] Ajustes de la especificación funcional (sin perder funcionalidad).
   - Filtros de columna estilo Excel con selección MÚLTIPLE: en Buscar equipos y Registro MP
     cada columna de lista abre un checklist (uno, varios o todos los valores), con buscador.
@@ -569,6 +580,9 @@ tr.filtros-col input,tr.filtros-col select{width:100%;font-size:11px;padding:5px
 .colf-item{display:flex;align-items:center;gap:8px;font-size:12px;padding:4px 5px;border-radius:5px;cursor:pointer;font-weight:400}
 .colf-item:hover{background:var(--surface-2)}
 .colf-item input{width:auto!important;margin:0;cursor:pointer}
+table.eq-grid tbody tr.eq-row{cursor:pointer}
+table.eq-grid tbody tr.eq-row:hover{background:var(--surface-2)}
+.bitacora .ev.gantt{border-left:3px dashed var(--accent);background:var(--surface-2)}
 .mp-col{text-align:center;min-width:30px}
 td.mp-ok{color:var(--op);font-weight:700}
 td.mp-rep{color:var(--st);font-weight:600}
@@ -1040,7 +1054,7 @@ const SEED = __SEED_PLACEHOLDER__;
 //==============================================================
 // CONSTANTES & CATÁLOGOS
 //==============================================================
-const APP_VERSION = '0.40';
+const APP_VERSION = '0.41';
 const STORAGE_KEY = 'hhha_v1_data';
 const MESES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 const MES_NUM = {Ene:0,Feb:1,Mar:2,Abr:3,May:4,Jun:5,Jul:6,Ago:7,Sep:8,Oct:9,Nov:10,Dic:11};
@@ -1548,6 +1562,14 @@ function aplicarEfectosEvento(ev){
       crearPendienteAuto(ev.inv, 'reprogramacion',
         `Reprogramar MP por causal ${r} — ${c.desc}. ${c.reprog30?'Reprogramar dentro de 30 días.':'Esperar reintegro del equipo.'}`,
         ev.ejecutor, ev.id, fechaComp);
+      // Reprogramación: marca 'R' (reprogramado) en la PROGRAMACIÓN del mes siguiente,
+      // solo si ese mes está vacío (no pisa una MP ya programada). Se quita al anular.
+      const nextMes = NUM_MES[(mesIdx + 1) % 12];
+      eq.registro[nextMes] = eq.registro[nextMes] || {};
+      if(!eq.registro[nextMes].P){
+        eq.registro[nextMes].P = 'R';
+        eq.registro[nextMes].__reprogPorCausal = true;
+      }
     }
     if(r === 'NU'){
       crearPendienteAuto(ev.inv,'gestion_general','Localizar equipo (resultado MP = NU)',ev.ejecutor,ev.id,null);
@@ -2375,7 +2397,7 @@ VIEWS.equipos = function(root, params){
     tbody.innerHTML = '';
     lista.slice(0,500).forEach(e => {
       const pend = pendientesDe(e.inv).filter(p => p.estado !== 'cerrado').length;
-      tbody.appendChild(el('tr',{},
+      tbody.appendChild(el('tr',{class:'eq-row',title:'Abrir ficha',onclick:()=>navigate('equipo',{inv:e.inv})},
         el('td',{class:'num'}, e.id != null ? String(e.id) : '—'),
         el('td',{}, e.carpeta != null ? String(e.carpeta) : '—'),
         el('td',{}, el('strong',{}, e.inv||'—')),
@@ -2391,9 +2413,8 @@ VIEWS.equipos = function(root, params){
         el('td',{class:'num'}, pend > 0 ? el('span',{class:'badge abierto'},pend) : el('small',{class:'muted'},'—')),
         el('td',{class:'num'}, e.estadoDesde ? diasEnEstado(e)+' d' : el('small',{class:'muted'},'—')),
         el('td',{class:'actions',style:{whiteSpace:'nowrap'}},
-          el('button',{class:'small',title:'Registrar evento',onclick:()=>nuevoEvento({invDefault:e.inv})},'➕ Evento'),
-          el('button',{class:'small',title:'Registrar pendiente',onclick:()=>nuevoPendiente({invDefault:e.inv})},'➕ Pend.'),
-          el('button',{class:'small ghost',title:'Abrir ficha',onclick:()=>navigate('equipo',{inv:e.inv})},'Ficha')
+          el('button',{class:'small',title:'Registrar evento',onclick:ev=>{ev.stopPropagation();nuevoEvento({invDefault:e.inv});}},'➕ Evento'),
+          el('button',{class:'small',title:'Registrar pendiente',onclick:ev=>{ev.stopPropagation();nuevoPendiente({invDefault:e.inv});}},'➕ Pend.')
         )
       ));
     });
@@ -2438,7 +2459,7 @@ VIEWS.equipos = function(root, params){
   );
   root.appendChild(el('div',{class:'view'},
     el('h2',{},'Buscar equipos'),
-    el('div',{class:'subtitle'},'Planilla de equipos: ordena por cualquier columna (clic en su título), filtra en cada una (uno, varios o todos los valores) y registra evento o pendiente desde la fila.'),
+    el('div',{class:'subtitle'},'Planilla de equipos: haz clic en una fila para abrir su ficha. Ordena por cualquier columna (clic en su título), filtra en cada una (uno, varios o todos los valores) y registra evento o pendiente con los botones de la fila.'),
     barraQA,
     el('div',{class:'toolbar'}, el('div',{class:'grow'},search)),
     chipsBar,
@@ -2735,20 +2756,57 @@ function renderMatrizMP(eq){
   );
 }
 
+// Entradas derivadas de la carta Gantt: por cada mes con resultado (R) en la matriz que NO
+// tenga ya un evento MP real, se muestra una fila derivada en el historial (no es un evento
+// real: no se guarda ni se edita). Fecha asumida = día 15 del mes, año vigente.
+function eventosGanttDerivados(eq){
+  const year = new Date().getFullYear();
+  const mesesConEventoMP = new Set(
+    state.eventos.filter(e => e.inv === eq.inv && !e.anulado && e.tipo === 'Mantención preventiva' && e.fecha)
+      .map(e => new Date(e.fecha + 'T00:00:00').getMonth())
+  );
+  const out = [];
+  Object.keys(eq.registro || {}).forEach(mes => {
+    const reg = eq.registro[mes] || {};
+    if(!reg.R) return;
+    const mIdx = MES_NUM[mes];
+    if(mIdx == null || mesesConEventoMP.has(mIdx)) return;
+    out.push({ __gantt:true, tipo:'Mantención preventiva', resultado:reg.R, mes,
+      fecha:`${year}-${String(mIdx+1).padStart(2,'0')}-15` });
+  });
+  return out;
+}
 function renderBitacora(eq){
   const todos = eventosDeTodos(eq.inv).slice().reverse();
   const activos = todos.filter(e => !e.anulado);
   const anulados = todos.filter(e => e.anulado);
-  if(todos.length === 0) return el('div',{class:'empty'},'Sin eventos registrados.');
+  const gantt = eventosGanttDerivados(eq);
+  // Mezcla eventos reales + derivados de la carta Gantt, más nuevos arriba.
+  const filas = [...todos, ...gantt].sort((a,b)=>(b.fecha||'').localeCompare(a.fecha||''));
+  if(filas.length === 0) return el('div',{class:'empty'},'Sin eventos registrados.');
+  const resumen = [];
+  if(anulados.length > 0) resumen.push(`${activos.length} activo${activos.length!==1?'s':''} · ${anulados.length} anulado${anulados.length!==1?'s':''}`);
+  if(gantt.length > 0) resumen.push(`${gantt.length} de la carta Gantt`);
   return el('div',{class:'section'},
     el('h3',{},
       'Bitácora — hoja de vida',
-      anulados.length > 0
-        ? el('small',{style:{fontWeight:'400',color:'var(--muted)',marginLeft:'8px',textTransform:'none',letterSpacing:'0'}},
-            `${activos.length} activo${activos.length!==1?'s':''} · ${anulados.length} anulado${anulados.length!==1?'s':''}`)
-        : null
+      resumen.length
+        ? el('small',{style:{fontWeight:'400',color:'var(--muted)',marginLeft:'8px',textTransform:'none',letterSpacing:'0'}}, resumen.join(' · '))
+        : null,
+      el('button',{class:'small ghost',style:{marginLeft:'10px',fontWeight:'400'},title:'Imprimir el registro de eventos',onclick:()=>imprimirBitacora(eq)},'🖨 Imprimir')
     ),
-    el('div',{class:'bitacora'}, ...todos.map(ev => el('div',{class:'ev'+(ev.anulado?' anulado':'')+(ev.origen==='conciliacion_auto'||ev.origen==='conciliacion'?' auto':'')},
+    el('div',{class:'bitacora'}, ...filas.map(ev => ev.__gantt
+      ? el('div',{class:'ev gantt'},
+          el('div',{class:'hd'},
+            el('div',{}, el('strong',{}, ev.tipo), ' ',
+              el('span',{class:'badge auto-badge',title:'Resultado tomado de la carta Gantt (matriz de MP). No es un evento registrado; la fecha es estimada (día 15).'},'📋 Carta Gantt'),
+              el('span',{class:'pill'}, 'R: '+ev.resultado)
+            ),
+            el('span',{class:'fecha'}, ev.mes+' '+(new Date().getFullYear()), el('small',{class:'muted',style:{display:'block',fontSize:'10px',marginTop:'2px'}},'fecha estimada'))
+          ),
+          el('div',{class:'meta'}, 'Origen: carta Gantt del año vigente')
+        )
+      : el('div',{class:'ev'+(ev.anulado?' anulado':'')+(ev.origen==='conciliacion_auto'||ev.origen==='conciliacion'?' auto':'')},
       el('div',{class:'hd'},
         el('div',{}, el('strong',{}, ev.tipo), ' ',
           ev.anulado ? el('span',{class:'badge anulado-badge'},'Anulado') :
@@ -2781,6 +2839,32 @@ function renderBitacora(eq){
       ) : null
     )))
   );
+}
+
+// Imprimir el registro de eventos del equipo (eventos reales + derivados de la carta Gantt).
+function imprimirBitacora(eq){
+  const reales = eventosDeTodos(eq.inv).filter(e => !e.anulado);
+  const gantt = eventosGanttDerivados(eq);
+  const filas = [...reales, ...gantt].sort((a,b)=>(a.fecha||'').localeCompare(b.fecha||''));
+  if(filas.length === 0){ toast('No hay eventos para imprimir.','warn'); return; }
+  const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const rows = filas.map(ev => {
+    const origen = ev.__gantt ? 'Carta Gantt (est.)' : (ev.oficial==='Sí' ? 'Oficial' : 'Borrador');
+    const resEstado = [ev.resultado?('R: '+ev.resultado):'', ev.estado?('Estado: '+ev.estado):''].filter(Boolean).join(' · ');
+    return `<tr><td>${esc(fmtFecha(ev.fecha))}</td><td>${esc(ev.tipo)}</td><td>${esc(resEstado)}</td><td>${esc(ev.ejecutor||'')}</td><td>${esc(ev.folio||'')}</td><td>${esc(ev.obs||'')}</td><td>${esc(origen)}</td></tr>`;
+  }).join('');
+  const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Historial de eventos · ${esc(eq.inv)}</title>`
+    + `<style>body{font-family:Arial,Helvetica,sans-serif;color:#111;margin:24px}h1{font-size:18px;margin:0 0 2px}`
+    + `h2{font-size:12px;font-weight:400;color:#555;margin:0 0 14px}table{width:100%;border-collapse:collapse;font-size:11px}`
+    + `th,td{border:1px solid #bbb;padding:5px 7px;text-align:left;vertical-align:top}th{background:#eee}</style></head><body>`
+    + `<h1>Historial de eventos — ${esc(eq.equipo||'')} (${esc(eq.inv)})</h1>`
+    + `<h2>Serie ${esc(eq.serie||'—')} · ${esc(eq.servicio||'')} · ${esc(eq.unidad||'')} · Impreso ${esc(new Date().toLocaleString('es-CL'))}</h2>`
+    + `<table><thead><tr><th>Fecha</th><th>Tipo</th><th>Resultado / Estado</th><th>Ejecutor</th><th>Folio</th><th>Observación</th><th>Origen</th></tr></thead><tbody>${rows}</tbody></table>`
+    + `</body></html>`;
+  const win = window.open('', '_blank');
+  if(!win){ toast('El navegador bloqueó la ventana de impresión. Permite ventanas emergentes para imprimir.','error'); return; }
+  win.document.write(html); win.document.close(); win.focus();
+  setTimeout(()=>{ try{ win.print(); }catch(e){} }, 300);
 }
 
 function renderCiclos(eq){
@@ -4889,6 +4973,21 @@ function anularEventoAplicar(ev, motivo){
         } else {
           eq.registro[mes].R = otrasMP[0].resultado;
           revertidos.push(`R de ${mes} cambiado a ${otrasMP[0].resultado} (de otra MP)`);
+        }
+      }
+      // Reprogramación por causal: quitar la 'R' que esta MP puso en el mes siguiente,
+      // salvo que otra causal viva del mismo mes la justifique.
+      if(/^C[1-8]$/.test(ev.resultado||'')){
+        const nextMes = MESES[m % 12];
+        const otrasCausal = state.eventos.filter(x =>
+          x.id !== ev.id && !x.anulado && x.inv === ev.inv && x.tipo === 'Mantención preventiva' &&
+          /^C[1-8]$/.test(x.resultado||'') && x.fecha && new Date(x.fecha+'T00:00:00').getMonth() === (m-1));
+        if(otrasCausal.length === 0 && eq.registro && eq.registro[nextMes] &&
+           eq.registro[nextMes].__reprogPorCausal && eq.registro[nextMes].P === 'R'){
+          delete eq.registro[nextMes].P;
+          delete eq.registro[nextMes].__reprogPorCausal;
+          if(Object.keys(eq.registro[nextMes]).length === 0) delete eq.registro[nextMes];
+          revertidos.push(`R (reprogramación) de ${nextMes} eliminada`);
         }
       }
     }
